@@ -2,17 +2,15 @@
 
 public class Tarefa
 {
-    public int Id { get; private set; }
     public string Titulo { get; private set; }
     public bool Concluida { get; private set; }
 
 
-    public Tarefa(string titulo, int id, bool concluida = false)
+    public Tarefa(string titulo, bool concluida = false)
     {
         ValidarTitulo(titulo);
 
         Titulo = titulo.Trim();
-        Id = id;
         Concluida = concluida;
     }
 

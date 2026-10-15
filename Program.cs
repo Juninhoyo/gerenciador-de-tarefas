@@ -4,26 +4,29 @@ using GerenciadorDeTarefas.Utils;
 List<Tarefa> tarefas = new List<Tarefa>();
 
 string opcao, titulo;
-int proximoId, numeroRemoverTarefa, numeroConcluirTarefa;
+int numeroRemoverTarefa, numeroConcluirTarefa;
 
 
 do
 {
     Console.Clear();
     ExibirMenu();
-    opcao = Entrada.LerTexto("Digite a opção que gostaria de continuar");
+    opcao = Entrada.LerTexto("Digite a opção que gostaria de continuar: ");
 
     switch (opcao)
     {
         case "1":
+            Console.Clear();
+            Console.WriteLine("Adicionar Tarefa");
             titulo = Entrada.LerTexto("Digite o nome da tarefa a ser adicionada: ");
-            proximoId = tarefas.Any() ? tarefas.Max(t => t.Id) + 1 : 1;
-            tarefas.Add(new Tarefa(titulo, proximoId));
+            tarefas.Add(new Tarefa(titulo));
             Console.WriteLine("Tarefa adicionada com sucesso. Pressione uma tecla para continuar");
             Console.ReadKey();
             break;
 
         case "2":
+            Console.Clear();
+            Console.WriteLine("Remover Tarefa");
             ListarTarefas(tarefas);
             Console.WriteLine("Digite o número da tarefa que gostaria de remover: ");
 
@@ -42,6 +45,8 @@ do
             break;
 
         case "3":
+            Console.Clear();
+            Console.WriteLine("Concluir a tarefa");
             ListarTarefas(tarefas);
             Console.WriteLine("Digite o número da tarefa que deseja marcar como concluída");
             if (int.TryParse(Console.ReadLine(), out numeroConcluirTarefa) && numeroConcluirTarefa >= 1 &&
@@ -58,6 +63,7 @@ do
             break;
 
         case "4":
+            Console.Clear();
             Console.WriteLine("Lista de tarefas");
             if (tarefas.Count == 0)
             {
