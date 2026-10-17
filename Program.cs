@@ -1,7 +1,10 @@
 ﻿using GerenciadorDeTarefas.Models;
 using GerenciadorDeTarefas.Utils;
+using Newtonsoft.Json;
 
-List<Tarefa> tarefas = new List<Tarefa>();
+
+SalvarArquivoTarefa arquivoTarefa = new SalvarArquivoTarefa();
+List<Tarefa> tarefas = arquivoTarefa.CarregarArquivo();
 
 string opcao, titulo;
 int numeroRemoverTarefa, numeroConcluirTarefa;
@@ -12,9 +15,6 @@ do
 {
     try
     {
-
-
-
         Console.Clear();
         ExibirMenu();
         opcao = Entrada.LerTexto("Digite a opção que gostaria de continuar: ");
@@ -26,8 +26,9 @@ do
                 Console.WriteLine("Adicionar Tarefa");
                 titulo = Entrada.LerTexto("Digite o nome da tarefa a ser adicionada: ");
                 tarefas.Add(new Tarefa(titulo));
-                Console.WriteLine("Tarefa adicionada com sucesso. Pressione uma tecla para continuar");
-                Console.ReadKey();
+                arquivoTarefa.SalvarArquivo(tarefas);
+                Console.WriteLine("Tarefa adicionada com sucesso.");
+                Pausar();
                 break;
 
             case "2":
@@ -40,14 +41,14 @@ do
                     numeroRemoverTarefa <= tarefas.Count)
                 {
                     tarefas.RemoveAt(numeroRemoverTarefa - 1);
-                    Console.WriteLine("Tarefa removida com sucesso. Pressione uma tecla para continuar");
+                    arquivoTarefa.SalvarArquivo(tarefas);
+                    Console.WriteLine("Tarefa removida com sucesso.");
                 }
                 else
                 {
-                    Console.WriteLine("Número da tarefa está inválido. Pressione uma tecla para continuar");
+                    Console.WriteLine("Número da tarefa está inválido.");
                 }
-
-                Console.ReadKey();
+                Pausar();
                 break;
 
             case "3":
@@ -59,14 +60,14 @@ do
                     numeroConcluirTarefa <= tarefas.Count)
                 {
                     tarefas[numeroConcluirTarefa - 1].Concluir();
-                    Console.WriteLine("Tarefa concluída com sucesso. Pressione uma tecla para continuar");
+                    arquivoTarefa.SalvarArquivo(tarefas);
+                    Console.WriteLine("Tarefa concluída com sucesso.");
                 }
                 else
                 {
-                    Console.WriteLine("Número da tarefa está inválido. Pressione uma tecla para continuar");
+                    Console.WriteLine("Número da tarefa está inválido.");
                 }
-
-                Console.ReadKey();
+                Pausar();
                 break;
 
             case "4":
@@ -80,9 +81,7 @@ do
                 {
                     ListarTarefas(tarefas);
                 }
-
-                Console.WriteLine("Pressione uma tecla para continuar");
-                Console.ReadKey();
+                Pausar();
                 break;
 
             case "0":
@@ -91,8 +90,7 @@ do
 
             default:
                 Console.WriteLine("Opção inválida");
-                Console.WriteLine("Pressione uma tecla para continuar");
-                Console.ReadKey();
+                Pausar();
                 break;
         }
     }
@@ -101,9 +99,7 @@ do
         Console.WriteLine($"Erro: {ex.Message}");
         Console.ReadKey();
     }
-
 } while (opcao != "0");
-    
     
 static void ExibirMenu()
 {
@@ -122,4 +118,10 @@ static void ListarTarefas(List<Tarefa> tarefas)
     {
         Console.WriteLine($"{i + 1} - {tarefas[i].Titulo} - {(tarefas[i].Concluida ? "Concluída" : "Pendente")}");
     }
+}
+
+static void Pausar()
+{
+    Console.WriteLine("Pressione uma tecla para continuar");
+    Console.ReadKey();
 }
