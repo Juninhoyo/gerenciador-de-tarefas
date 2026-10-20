@@ -1,15 +1,10 @@
 ﻿using GerenciadorDeTarefas.Models;
+using GerenciadorDeTarefas.Services;
 using GerenciadorDeTarefas.Utils;
-using Newtonsoft.Json;
 
+var servico = new ServicoDeTarefas(new SalvarArquivoTarefa());
 
-SalvarArquivoTarefa arquivoTarefa = new SalvarArquivoTarefa();
-List<Tarefa> tarefas = arquivoTarefa.CarregarArquivo();
-
-string opcao, titulo;
-int numeroRemoverTarefa, numeroConcluirTarefa;
-
-opcao = "";
+string opcao = "";
 
 do
 {
@@ -23,64 +18,25 @@ do
         {
             case "1":
                 Console.Clear();
-                Console.WriteLine("Adicionar Tarefa");
-                titulo = Entrada.LerTexto("Digite o nome da tarefa a ser adicionada: ");
-                tarefas.Add(new Tarefa(titulo));
-                arquivoTarefa.SalvarArquivo(tarefas);
-                Console.WriteLine("Tarefa adicionada com sucesso.");
+                AdicionarTarefa(servico);
                 Pausar();
                 break;
 
             case "2":
                 Console.Clear();
-                Console.WriteLine("Remover Tarefa");
-                ListarTarefas(tarefas);
-                Console.WriteLine("Digite o número da tarefa que gostaria de remover: ");
-
-                if (int.TryParse(Console.ReadLine(), out numeroRemoverTarefa) && numeroRemoverTarefa >= 1 &&
-                    numeroRemoverTarefa <= tarefas.Count)
-                {
-                    tarefas.RemoveAt(numeroRemoverTarefa - 1);
-                    arquivoTarefa.SalvarArquivo(tarefas);
-                    Console.WriteLine("Tarefa removida com sucesso.");
-                }
-                else
-                {
-                    Console.WriteLine("Número da tarefa está inválido.");
-                }
+                RemoverTarefa(servico);
                 Pausar();
                 break;
 
             case "3":
                 Console.Clear();
-                Console.WriteLine("Concluir a tarefa");
-                ListarTarefas(tarefas);
-                Console.WriteLine("Digite o número da tarefa que deseja marcar como concluída");
-                if (int.TryParse(Console.ReadLine(), out numeroConcluirTarefa) && numeroConcluirTarefa >= 1 &&
-                    numeroConcluirTarefa <= tarefas.Count)
-                {
-                    tarefas[numeroConcluirTarefa - 1].Concluir();
-                    arquivoTarefa.SalvarArquivo(tarefas);
-                    Console.WriteLine("Tarefa concluída com sucesso.");
-                }
-                else
-                {
-                    Console.WriteLine("Número da tarefa está inválido.");
-                }
+                ConcluirTarefa(servico);
                 Pausar();
                 break;
 
             case "4":
                 Console.Clear();
-                Console.WriteLine("Lista de tarefas");
-                if (tarefas.Count == 0)
-                {
-                    Console.WriteLine("Nenhuma tarefa foi adicionada para ser listada");
-                }
-                else
-                {
-                    ListarTarefas(tarefas);
-                }
+                ListarTodasTarefas(servico);
                 Pausar();
                 break;
 
@@ -112,7 +68,7 @@ static void ExibirMenu()
     Console.WriteLine("------------------------------");
 }
 
-static void ListarTarefas(List<Tarefa> tarefas)
+static void ListarTarefas(IReadOnlyList<Tarefa> tarefas)
 {
     for (int i = 0; i < tarefas.Count; i++)
     {
@@ -125,3 +81,53 @@ static void Pausar()
     Console.WriteLine("Pressione uma tecla para continuar");
     Console.ReadKey();
 }
+
+static void AdicionarTarefa(ServicoDeTarefas servico)
+{
+    Console.WriteLine("Adicionar Tarefa");
+    var adicionar = servico.Adicionar(Entrada.LerTexto("Digite o nome da tarefa: "));
+    Console.WriteLine(adicionar.IsSuccess ? "Tarefa adicionada com sucesso." : adicionar.Error.Description);
+}
+
+static void RemoverTarefa(ServicoDeTarefas servico)
+{
+    Console.WriteLine("Remover Tarefa");
+    if (!TemTarefas(servico))
+    {
+        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        return;
+    }
+    ListarTarefas(servico.ObterTodas());
+    Console.WriteLine("Digite o número da tarefa que gostaria de remover: ");
+    int.TryParse(Console.ReadLine(), out int numeroRemover);
+    var remover = servico.Remover(numeroRemover);
+    Console.WriteLine(remover.IsSuccess ? "Tarefa removida com sucesso." : remover.Error.Description);
+}
+
+static void ConcluirTarefa(ServicoDeTarefas servico)
+{
+    Console.WriteLine("Concluir a tarefa");
+    if (!TemTarefas(servico))
+    {
+        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        return;
+    }
+    ListarTarefas(servico.ObterTodas());
+    Console.Write("Digite o número da tarefa que deseja marcar como concluída");
+    int.TryParse(Console.ReadLine(), out int numeroConcluir);
+    var concluir = servico.Concluir(numeroConcluir);
+    Console.WriteLine((concluir.IsSuccess ? "Tarefa comcluida com sucesso." : concluir.Error.Description));
+}
+
+static void ListarTodasTarefas(ServicoDeTarefas servico)
+{
+    Console.WriteLine("Lista de todas as tarefas");
+    if (!TemTarefas(servico))
+    {
+        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        return;
+    }
+    ListarTarefas(servico.ObterTodas());
+}
+
+static bool TemTarefas(ServicoDeTarefas servico) => servico.ObterTodas().Count > 0;
