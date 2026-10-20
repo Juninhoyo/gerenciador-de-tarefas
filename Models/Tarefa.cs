@@ -1,29 +1,32 @@
-﻿namespace GerenciadorDeTarefas.Models;
+﻿using GerenciadorDeTarefas.Common;
+using Newtonsoft.Json;
+
+namespace GerenciadorDeTarefas.Models;
 
 public class Tarefa
 {
     public string Titulo { get; private set; }
     public bool Concluida { get; private set; }
 
-
+    [JsonConstructor]
     public Tarefa(string titulo, bool concluida = false)
     {
-        ValidarTitulo(titulo);
-
-        Titulo = titulo.Trim();
+        Titulo = titulo;
         Concluida = concluida;
     }
-
+    
     public void Concluir()
     {
         Concluida = true;
     }
 
-    private static void ValidarTitulo(string titulo)
+    public static Result<Tarefa> Criar(string titulo)
     {
         if (string.IsNullOrWhiteSpace(titulo))
         {
-            throw new ArgumentException("O título não pode estar vazio");
+            return TarefaErrors.TituloVazio;
         }
+
+        return new Tarefa(titulo.Trim());
     }
 }
