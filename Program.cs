@@ -1,8 +1,21 @@
-﻿using GerenciadorDeTarefas.Models;
+﻿using GerenciadorDeTarefas.Exceptions;
+using GerenciadorDeTarefas.Models;
 using GerenciadorDeTarefas.Services;
 using GerenciadorDeTarefas.Utils;
 
-var servico = new ServicoDeTarefas(new SalvarArquivoTarefa());
+ServicoDeTarefas servico;
+
+try
+{
+    servico = new ServicoDeTarefas(new SalvarArquivoTarefa());
+}
+catch (ArquivoCorrompidoException ex)
+{
+    Console.WriteLine($"Erro: {ex.Message}");
+    Console.WriteLine("O programa sera encerrado.");
+    Pausar();
+    return;
+}
 
 string opcao = "";
 
@@ -50,10 +63,15 @@ do
                 break;
         }
     }
-    catch (ArgumentException ex)
+    catch (ArquivoInacessivelException ex)
     {
         Console.WriteLine($"Erro: {ex.Message}");
-        Console.ReadKey();
+        Pausar();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro inesperado {ex.Message}");
+        Pausar();
     }
 } while (opcao != "0");
     
