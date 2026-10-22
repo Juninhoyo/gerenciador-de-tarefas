@@ -16,4 +16,23 @@ public class Entrada
             Console.WriteLine("Entrada inválida");
         }
     }
+
+    public static bool LerConfirmacao(string mensagem)
+    {
+        while (true)
+        {
+            Console.Write(mensagem);
+            ConsoleKeyInfo tecla = Console.ReadKey();
+            Console.WriteLine("\n");
+            if (tecla.Key == ConsoleKey.S)
+            {
+                return true;
+            }
+            if (tecla.Key == ConsoleKey.N)
+            {
+                return false;
+            }
+            Console.WriteLine("Resposta inválida. Digite S ou N.");
+        }
+    }
 }
