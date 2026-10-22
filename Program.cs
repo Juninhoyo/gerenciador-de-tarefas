@@ -24,7 +24,7 @@ do
     try
     {
         Console.Clear();
-        ExibirMenu();
+        ExibirMenu(servico);
         opcao = Entrada.LerTexto("Digite a opção que gostaria de continuar: ");
 
         switch (opcao)
@@ -87,9 +87,15 @@ do
     }
 } while (opcao != "0");
     
-static void ExibirMenu()
+static void ExibirMenu(ServicoDeTarefas servico)
 {
+    var tarefas = servico.ObterTodas();
+    int concluidas = tarefas.Count(t => t.Concluida);
+    int pendentes = tarefas.Count - concluidas;
+    
     Console.WriteLine("-----------------------------");
+    Console.WriteLine("Gerenciador de tarefas");
+    Console.WriteLine($"Pendentes: {pendentes} Concluidas: {concluidas}");
     Console.WriteLine("1 - Adicionar uma nova tarefa");
     Console.WriteLine("2 - Remover uma tarefa");
     Console.WriteLine("3 - Concluir uma tarefa");
