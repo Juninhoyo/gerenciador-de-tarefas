@@ -132,6 +132,7 @@ static void RemoverTarefa(ServicoDeTarefas servico)
     ListarTarefas(servico.ObterTodas());
     Console.Write("Digite o número da tarefa que gostaria de remover: ");
     int.TryParse(Console.ReadLine(), out int numeroRemover);
+    Entrada.LerConfirmacao("Tem certrza que deseja remover? (S/N): ");
     var remover = servico.Remover(numeroRemover);
     Console.WriteLine(remover.IsSuccess ? "Tarefa removida com sucesso." : remover.Error.Description);
 }
