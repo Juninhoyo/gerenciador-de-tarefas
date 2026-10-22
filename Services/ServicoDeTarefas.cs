@@ -31,7 +31,7 @@ public sealed class ServicoDeTarefas
         return resultado;
     }
 
-    public Result Remover(int numero)
+    public Result ValidarNumero(int numero)
     {
         if (_tarefas.Count == 0)
         {
@@ -41,6 +41,13 @@ public sealed class ServicoDeTarefas
         {
             return TarefaErrors.NumeroInvalido;
         }
+
+        return Result.Success();
+    }
+
+    public Result Remover(int numero)
+    {
+        ValidarNumero(numero);
         _tarefas.RemoveAt(numero - 1);
         _repositorio.SalvarArquivo(_tarefas);
         return Result.Success();
@@ -48,15 +55,20 @@ public sealed class ServicoDeTarefas
 
     public Result Concluir(int numero)
     {
-        if (_tarefas.Count == 0)
-        {
-            return TarefaErrors.ListaVazia;
-        }
-        if (!NumeroValido(numero))
-        {
-            return TarefaErrors.NumeroInvalido;
-        }
+        ValidarNumero(numero);
         _tarefas[numero - 1].Concluir();
+        _repositorio.SalvarArquivo(_tarefas);
+        return Result.Success();
+    }
+
+    public Result Editar(int numero, string novoTitulo)
+    {
+        ValidarNumero(numero);
+        var resultado = _tarefas[numero - 1].Editar(novoTitulo);
+        if (resultado.IsFailure)
+        {
+            return resultado;
+        }
         _repositorio.SalvarArquivo(_tarefas);
         return Result.Success();
     }

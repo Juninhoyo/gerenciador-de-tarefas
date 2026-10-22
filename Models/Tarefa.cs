@@ -29,4 +29,16 @@ public class Tarefa
 
         return new Tarefa(titulo.Trim());
     }
+
+    public Result Editar(string novoTitulo)
+    {
+        if (string.IsNullOrWhiteSpace(novoTitulo))
+        {
+            return TarefaErrors.TituloVazio;
+        }
+
+        Titulo = novoTitulo.Trim();
+        return Result.Success();
+    }
+    
 }
