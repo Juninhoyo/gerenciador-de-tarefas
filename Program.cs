@@ -49,22 +49,28 @@ do
             
             case "4":
                 Console.Clear();
+                ReabrirTarefa(servico);
+                Pausar();
+                break;
+            
+            case "5":
+                Console.Clear();
                 EditarTarefa(servico);
                 Pausar();
                 break;
 
-            case "5":
+            case "6":
                 Console.Clear();
                 ListarTodasTarefas(servico);
                 Pausar();
                 break;
 
             case "0":
-                Console.WriteLine("Saindo do programa");
+                Console.WriteLine("Saindo do programa.");
                 break;
 
             default:
-                Console.WriteLine("Opção inválida");
+                Console.WriteLine("Opção inválida.");
                 Pausar();
                 break;
         }
@@ -87,8 +93,9 @@ static void ExibirMenu()
     Console.WriteLine("1 - Adicionar uma nova tarefa");
     Console.WriteLine("2 - Remover uma tarefa");
     Console.WriteLine("3 - Concluir uma tarefa");
-    Console.WriteLine("4 - Editar tarefa");
-    Console.WriteLine("5 - Listar todas as tarefas");
+    Console.WriteLine("4 - Reabrir tarefa");
+    Console.WriteLine("5 - Editar tarefa");
+    Console.WriteLine("6 - Listar todas as tarefas");
     Console.WriteLine("0 - Sair do programa");
     Console.WriteLine("------------------------------");
 }
@@ -103,7 +110,7 @@ static void ListarTarefas(IReadOnlyList<Tarefa> tarefas)
 
 static void Pausar()
 {
-    Console.WriteLine("Pressione uma tecla para continuar");
+    Console.WriteLine("Pressione uma tecla para continuar.");
     Console.ReadKey();
 }
 
@@ -123,7 +130,7 @@ static void RemoverTarefa(ServicoDeTarefas servico)
         return;
     }
     ListarTarefas(servico.ObterTodas());
-    Console.WriteLine("Digite o número da tarefa que gostaria de remover: ");
+    Console.Write("Digite o número da tarefa que gostaria de remover: ");
     int.TryParse(Console.ReadLine(), out int numeroRemover);
     var remover = servico.Remover(numeroRemover);
     Console.WriteLine(remover.IsSuccess ? "Tarefa removida com sucesso." : remover.Error.Description);
@@ -138,10 +145,24 @@ static void ConcluirTarefa(ServicoDeTarefas servico)
         return;
     }
     ListarTarefas(servico.ObterTodas());
-    Console.Write("Digite o número da tarefa que deseja marcar como concluída");
+    Console.Write("Digite o número da tarefa que deseja marcar como concluída: ");
     int.TryParse(Console.ReadLine(), out int numeroConcluir);
     var concluir = servico.Concluir(numeroConcluir);
     Console.WriteLine((concluir.IsSuccess ? "Tarefa comcluida com sucesso." : concluir.Error.Description));
+}
+
+static void ReabrirTarefa(ServicoDeTarefas servico)
+{
+    Console.WriteLine("Desconcluir a tarefa");
+    if (!TemTarefas(servico))
+    {
+        Console.WriteLine("Nenhuma tarefa cadastrada.");
+    }
+    ListarTarefas(servico.ObterTodas());
+    Console.Write("Digite o número da tarefa que deseja reabrir: ");
+    int.TryParse(Console.ReadLine(), out int numeroReabrir);
+    var reabrir = servico.Reabrir(numeroReabrir);
+    Console.WriteLine((reabrir.IsSuccess ? "Tarefa reaberta com sucesso." : reabrir.Error.Description));
 }
 
 static void ListarTodasTarefas(ServicoDeTarefas servico)
@@ -162,11 +183,11 @@ static void EditarTarefa(ServicoDeTarefas servico)
     Console.WriteLine("Editar Tarefa");
     if (!TemTarefas((servico)))
     {   
-        Console.WriteLine("Nenhuma tarefa cadastrada");
+        Console.WriteLine("Nenhuma tarefa cadastrada.");
         return;
     }
     ListarTarefas(servico.ObterTodas());
-    Console.Write("Digite o número da tarefa que deseja editar o titulo");
+    Console.Write("Digite o número da tarefa que deseja editar o titulo: ");
     int.TryParse(Console.ReadLine(), out int numeroEditar);
     var validacao = servico.ValidarNumero(numeroEditar);
     if (validacao.IsFailure)
@@ -174,7 +195,7 @@ static void EditarTarefa(ServicoDeTarefas servico)
         Console.WriteLine(validacao.Error.Description);
         return;
     }
-    string novoTitulo = Entrada.LerTexto("Digite o novo titulo");
+    string novoTitulo = Entrada.LerTexto("Digite o novo titulo: ");
     var editar = servico.Editar(numeroEditar, novoTitulo);
     Console.WriteLine((editar.IsSuccess ? "Tarefa editada com sucesso. " : editar.Error.Description));
 }

@@ -20,6 +20,11 @@ public class Tarefa
         Concluida = true;
     }
 
+    public void Reabrir()
+    {
+        Concluida = false;
+    }
+
     public static Result<Tarefa> Criar(string titulo)
     {
         if (string.IsNullOrWhiteSpace(titulo))

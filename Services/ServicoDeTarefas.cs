@@ -61,6 +61,14 @@ public sealed class ServicoDeTarefas
         return Result.Success();
     }
 
+    public Result Reabrir(int numero)
+    {
+        ValidarNumero(numero);
+        _tarefas[numero - 1].Reabrir();
+        _repositorio.SalvarArquivo(_tarefas);
+        return Result.Success();
+    } 
+    
     public Result Editar(int numero, string novoTitulo)
     {
         ValidarNumero(numero);
