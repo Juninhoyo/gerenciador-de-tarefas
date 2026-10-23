@@ -80,4 +80,19 @@ public sealed class ServicoDeTarefas
         _repositorio.SalvarArquivo(_tarefas);
         return Result.Success();
     }
+
+    public Result<int> RemoverConcluidas()
+    {
+        if (_tarefas.Count == 0)
+        {
+            return TarefaErrors.ListaVazia;
+        }
+        int removidas = _tarefas.RemoveAll(t => t.Concluida);
+        if (removidas == 0)
+        {
+            return TarefaErrors.NenhumaConcluida;
+        }
+        _repositorio.SalvarArquivo(_tarefas);
+        return removidas;
+    }
 }

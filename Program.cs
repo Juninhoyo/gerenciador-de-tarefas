@@ -64,6 +64,12 @@ do
                 ListarTodasTarefas(servico);
                 Pausar();
                 break;
+            
+            case "7":
+                Console.Clear();
+                RemoverTodasConcluidas(servico);
+                Pausar();
+                break;
 
             case "0":
                 Console.WriteLine("Saindo do programa.");
@@ -95,13 +101,14 @@ static void ExibirMenu(ServicoDeTarefas servico)
     
     Console.WriteLine("-----------------------------");
     Console.WriteLine("Gerenciador de tarefas");
-    Console.WriteLine($"Pendentes: {pendentes} Concluidas: {concluidas}");
+    Console.WriteLine($"Pendentes: {pendentes} Concluídas: {concluidas}");
     Console.WriteLine("1 - Adicionar uma nova tarefa");
     Console.WriteLine("2 - Remover uma tarefa");
     Console.WriteLine("3 - Concluir uma tarefa");
     Console.WriteLine("4 - Reabrir tarefa");
     Console.WriteLine("5 - Editar tarefa");
     Console.WriteLine("6 - Listar todas as tarefas");
+    Console.WriteLine("7 - Remover tarefas concluídas");
     Console.WriteLine("0 - Sair do programa");
     Console.WriteLine("------------------------------");
 }
@@ -205,4 +212,23 @@ static void EditarTarefa(ServicoDeTarefas servico)
     string novoTitulo = Entrada.LerTexto("Digite o novo titulo: ");
     var editar = servico.Editar(numeroEditar, novoTitulo);
     Console.WriteLine((editar.IsSuccess ? "Tarefa editada com sucesso. " : editar.Error.Description));
+}
+
+static void RemoverTodasConcluidas(ServicoDeTarefas servico)
+{
+    Console.WriteLine("Remover tarefas concluídas");
+    if (!TemTarefas(servico))
+    {
+        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        return;
+    }
+
+    if (!Entrada.LerConfirmacao("Tem certeza que deseja remover? (S/N): "))
+    {
+        Console.WriteLine("Remoção cancelada.");
+        return;
+    }
+
+    var remover = servico.RemoverConcluidas();
+    Console.WriteLine(remover.IsSuccess ? $"{remover.Value} Tarefa(s) concluída(s) removida(s) com sucesso. " : remover.Error.Description);
 }
