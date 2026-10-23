@@ -117,7 +117,12 @@ static void ListarTarefas(IReadOnlyList<Tarefa> tarefas)
 {
     for (int i = 0; i < tarefas.Count; i++)
     {
-        Console.WriteLine($"{i + 1} - {tarefas[i].Titulo} - {(tarefas[i].Concluida ? "Concluída" : "Pendente")}");
+        var t = tarefas[i];
+        var status = t.Concluida ? "Concluída" : "Pendente";
+        var inicio = t.DataInicio.ToString("dd/MM/yyyy HH:mm");
+        var conclusao = t.DataConclusao?.ToString("dd/MM/yyyy HH:mm") ?? "-";
+        
+        Console.WriteLine($"{i + 1} - {t.Titulo} - {status} | Inicio: {inicio} | Conclusão {conclusao}");
     }
 }
 
