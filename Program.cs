@@ -136,7 +136,14 @@ static void AdicionarTarefa(ServicoDeTarefas servico)
 {
     Console.WriteLine("Adicionar Tarefa");
     var adicionar = servico.Adicionar(Entrada.LerTexto("Digite o nome da tarefa: "));
-    Console.WriteLine(adicionar.IsSuccess ? "Tarefa adicionada com sucesso." : adicionar.Error.Description);
+    if (adicionar.IsSuccess)
+    {
+        Saida.Sucesso("Tarefa adicionada com sucesso");
+    }
+    else
+    {
+        Saida.Erro(adicionar.Error.Description);
+    }
 }
 
 static void RemoverTarefa(ServicoDeTarefas servico)
@@ -144,7 +151,7 @@ static void RemoverTarefa(ServicoDeTarefas servico)
     Console.WriteLine("Remover Tarefa");
     if (!TemTarefas(servico))
     {
-        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        Saida.Aviso("Nenhuma tarefa cadastrada.");
         return;
     }
     ListarTarefas(servico.ObterTodas());
@@ -156,7 +163,14 @@ static void RemoverTarefa(ServicoDeTarefas servico)
         return;
     }
     var remover = servico.Remover(numeroRemover);
-    Console.WriteLine(remover.IsSuccess ? "Tarefa removida com sucesso." : remover.Error.Description);
+    if (remover.IsSuccess)
+    {
+        Saida.Sucesso("Tarefa removida com sucesso");
+    }
+    else
+    {
+        Saida.Erro(remover.Error.Description);
+    }
 }
 
 static void ConcluirTarefa(ServicoDeTarefas servico)
@@ -164,14 +178,21 @@ static void ConcluirTarefa(ServicoDeTarefas servico)
     Console.WriteLine("Concluir a tarefa");
     if (!TemTarefas(servico))
     {
-        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        Saida.Aviso("Nenhuma tarefa cadastrada.");
         return;
     }
     ListarTarefas(servico.ObterTodas());
     Console.Write("Digite o número da tarefa que deseja marcar como concluída: ");
     int.TryParse(Console.ReadLine(), out int numeroConcluir);
     var concluir = servico.Concluir(numeroConcluir);
-    Console.WriteLine((concluir.IsSuccess ? "Tarefa comcluida com sucesso." : concluir.Error.Description));
+    if (concluir.IsSuccess)
+    {
+        Saida.Sucesso("Tarefa comcluida com sucesso.");
+    }
+    else
+    {
+        Saida.Erro(concluir.Error.Description);
+    }
 }
 
 static void ReabrirTarefa(ServicoDeTarefas servico)
@@ -179,14 +200,21 @@ static void ReabrirTarefa(ServicoDeTarefas servico)
     Console.WriteLine("Desconcluir a tarefa");
     if (!TemTarefas(servico))
     {
-        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        Saida.Aviso("Nenhuma tarefa cadastrada.");
         return;
     }
     ListarTarefas(servico.ObterTodas());
     Console.Write("Digite o número da tarefa que deseja reabrir: ");
     int.TryParse(Console.ReadLine(), out int numeroReabrir);
     var reabrir = servico.Reabrir(numeroReabrir);
-    Console.WriteLine((reabrir.IsSuccess ? "Tarefa reaberta com sucesso." : reabrir.Error.Description));
+    if (reabrir.IsSuccess)
+    {
+        Saida.Sucesso("Tarefa reaberta com sucesso.");
+    }
+    else
+    {
+        Saida.Erro(reabrir.Error.Description);
+    }
 }
 
 static void ListarTodasTarefas(ServicoDeTarefas servico)
@@ -194,7 +222,7 @@ static void ListarTodasTarefas(ServicoDeTarefas servico)
     Console.WriteLine("Lista de todas as tarefas");
     if (!TemTarefas(servico))
     {
-        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        Saida.Aviso("Nenhuma tarefa cadastrada.");
         return;
     }
     ListarTarefas(servico.ObterTodas());
@@ -207,7 +235,7 @@ static void EditarTarefa(ServicoDeTarefas servico)
     Console.WriteLine("Editar Tarefa");
     if (!TemTarefas((servico)))
     {   
-        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        Saida.Aviso("Nenhuma tarefa cadastrada.");
         return;
     }
     ListarTarefas(servico.ObterTodas());
@@ -216,12 +244,19 @@ static void EditarTarefa(ServicoDeTarefas servico)
     var validacao = servico.ValidarNumero(numeroEditar);
     if (validacao.IsFailure)
     {
-        Console.WriteLine(validacao.Error.Description);
+        Saida.Erro(validacao.Error.Description);
         return;
     }
     string novoTitulo = Entrada.LerTexto("Digite o novo titulo: ");
     var editar = servico.Editar(numeroEditar, novoTitulo);
-    Console.WriteLine((editar.IsSuccess ? "Tarefa editada com sucesso. " : editar.Error.Description));
+    if (editar.IsSuccess)
+    {
+        Saida.Sucesso("Tarefa editada com sucesso.");
+    }
+    else
+    {
+        Saida.Erro(editar.Error.Description);
+    }
 }
 
 static void RemoverTodasConcluidas(ServicoDeTarefas servico)
@@ -229,16 +264,21 @@ static void RemoverTodasConcluidas(ServicoDeTarefas servico)
     Console.WriteLine("Remover tarefas concluídas");
     if (!TemTarefas(servico))
     {
-        Console.WriteLine("Nenhuma tarefa cadastrada.");
+        Saida.Aviso("Nenhuma tarefa cadastrada.");
         return;
     }
-
     if (!Entrada.LerConfirmacao("Tem certeza que deseja remover? (S/N): "))
     {
         Console.WriteLine("Remoção cancelada.");
         return;
     }
-
     var remover = servico.RemoverConcluidas();
-    Console.WriteLine(remover.IsSuccess ? $"{remover.Value} Tarefa(s) concluída(s) removida(s) com sucesso. " : remover.Error.Description);
+    if (remover.IsSuccess)
+    {
+        Saida.Sucesso($"{remover.Value} Tarefa(s) concluída(s) removida(s) com sucesso.");
+    }
+    else
+    {
+        Saida.Erro(remover.Error.Description);
+    }
 }
