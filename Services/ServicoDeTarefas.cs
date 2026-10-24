@@ -87,7 +87,7 @@ public sealed class ServicoDeTarefas
         {
             return TarefaErrors.ListaVazia;
         }
-        int removidas = _tarefas.RemoveAll(t => t.Concluida);
+        int removidas = _tarefas.RemoveAll(t => t.Status == Tarefa.StatusTarefa.Concluida);
         if (removidas == 0)
         {
             return TarefaErrors.NenhumaConcluida;

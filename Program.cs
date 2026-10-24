@@ -96,8 +96,8 @@ do
 static void ExibirMenu(ServicoDeTarefas servico)
 {
     var tarefas = servico.ObterTodas();
-    int concluidas = tarefas.Count(t => t.Concluida);
-    int pendentes = tarefas.Count - concluidas;
+    int concluidas = tarefas.Count(t => t.Status == Tarefa.StatusTarefa.Concluida);
+    int pendentes = tarefas.Count(t => t.Status == Tarefa.StatusTarefa.Pendente);
     
     Console.WriteLine("-----------------------------");
     Console.WriteLine("Gerenciador de tarefas");
@@ -118,7 +118,7 @@ static void ListarTarefas(IReadOnlyList<Tarefa> tarefas)
     for (int i = 0; i < tarefas.Count; i++)
     {
         var t = tarefas[i];
-        var status = t.Concluida ? "Concluída" : "Pendente";
+        var status = t.Status == Tarefa.StatusTarefa.Concluida ? "Concluída" : "Pendente";
         var inicio = t.DataInicio.ToString("dd/MM/yyyy HH:mm");
         var conclusao = t.DataConclusao?.ToString("dd/MM/yyyy HH:mm") ?? "-";
         
@@ -150,7 +150,11 @@ static void RemoverTarefa(ServicoDeTarefas servico)
     ListarTarefas(servico.ObterTodas());
     Console.Write("Digite o número da tarefa que gostaria de remover: ");
     int.TryParse(Console.ReadLine(), out int numeroRemover);
-    Entrada.LerConfirmacao("Tem certrza que deseja remover? (S/N): ");
+    if (!Entrada.LerConfirmacao("Tem certeza que deseja remover? (S/N): "))
+    {
+        Console.WriteLine("Remoção cancelada.");
+        return;
+    }
     var remover = servico.Remover(numeroRemover);
     Console.WriteLine(remover.IsSuccess ? "Tarefa removida com sucesso." : remover.Error.Description);
 }
@@ -176,6 +180,7 @@ static void ReabrirTarefa(ServicoDeTarefas servico)
     if (!TemTarefas(servico))
     {
         Console.WriteLine("Nenhuma tarefa cadastrada.");
+        return;
     }
     ListarTarefas(servico.ObterTodas());
     Console.Write("Digite o número da tarefa que deseja reabrir: ");

@@ -1,33 +1,42 @@
 ﻿using GerenciadorDeTarefas.Common;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GerenciadorDeTarefas.Models;
 
 public class Tarefa
 {
     public string Titulo { get; private set; }
-    public bool Concluida { get; private set; }
+    [JsonConverter(typeof(StringEnumConverter))]
+    public StatusTarefa Status { get; private set; }
     public DateTime DataInicio { get; private set; }
     public DateTime? DataConclusao { get; private set; }
 
+    
+    public enum StatusTarefa
+    {
+        Pendente,
+        Concluida
+    }
+
     [JsonConstructor]
-    public Tarefa(string titulo, bool concluida, DateTime dataInicio, DateTime? dataConclusao)
+    public Tarefa(string titulo, StatusTarefa status, DateTime dataInicio, DateTime? dataConclusao)
     {
         Titulo = titulo;
-        Concluida = concluida;
+        Status = status;
         DataInicio = dataInicio;
         DataConclusao = dataConclusao;
     }
-    
+
     public void Concluir()
     {
-        Concluida = true;
+        Status = StatusTarefa.Concluida;
         DataConclusao = DateTime.Now;
     }
 
     public void Reabrir()
     {
-        Concluida = false;
+        Status = StatusTarefa.Pendente;
         DataConclusao = null;
     }
 
@@ -38,7 +47,7 @@ public class Tarefa
             return TarefaErrors.TituloVazio;
         }
 
-        return new Tarefa(titulo.Trim(),false, DateTime.Now, null);
+        return new Tarefa(titulo.Trim(), StatusTarefa.Pendente, DateTime.Now, null);
     }
 
     public Result Editar(string novoTitulo)
