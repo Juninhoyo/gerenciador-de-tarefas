@@ -63,8 +63,17 @@ public sealed class ServicoDeTarefas
 
     public Result Reabrir(int numero)
     {
-        ValidarNumero(numero);
-        _tarefas[numero - 1].Reabrir();
+        var validacao = ValidarNumero(numero);
+        if (validacao.IsFailure)
+        {
+            return validacao;
+        }
+        var tarefa = _tarefas[numero - 1];
+        if (tarefa.Status != Tarefa.StatusTarefa.Concluida)
+        {
+            return TarefaErrors.TarefaNaoConcluida;
+        }
+        tarefa.Reabrir();
         _repositorio.SalvarArquivo(_tarefas);
         return Result.Success();
     } 

@@ -12,5 +12,8 @@ public static class TarefaErrors
         new("Tarefa.ListaVazia", "Nenhuma tarefa cadastrada.");
 
     public static readonly Error NenhumaConcluida =
-        new("Tarefa.NenhumaConcluida", "Nenhuma tarefa concluída para remover");
+        new("Tarefa.NenhumaConcluida", "Nenhuma tarefa concluída para remover.");
+
+    public static readonly Error TarefaNaoConcluida =
+        new("Tarefa.TarefaNaoConcluida", "A tarefa selecionada não está concluida.");
 }

@@ -113,6 +113,11 @@ static void ExibirMenu(ServicoDeTarefas servico)
     Console.WriteLine("------------------------------");
 }
 
+static bool TemTarefas(ServicoDeTarefas servico) => servico.ObterTodas().Count > 0;
+
+static bool TemTarefaConcluida(ServicoDeTarefas servico) =>
+    servico.ObterTodas().Any(t => t.Status == Tarefa.StatusTarefa.Concluida);
+
 static void ListarTarefas(IReadOnlyList<Tarefa> tarefas)
 {
     for (int i = 0; i < tarefas.Count; i++)
@@ -203,6 +208,12 @@ static void ReabrirTarefa(ServicoDeTarefas servico)
         Saida.Aviso("Nenhuma tarefa cadastrada.");
         return;
     }
+
+    if (!TemTarefaConcluida(servico))
+    {
+        Saida.Aviso("Nehnhuma tarefa concluida para reabrir");
+        return;
+    }
     ListarTarefas(servico.ObterTodas());
     Console.Write("Digite o número da tarefa que deseja reabrir: ");
     int.TryParse(Console.ReadLine(), out int numeroReabrir);
@@ -227,8 +238,6 @@ static void ListarTodasTarefas(ServicoDeTarefas servico)
     }
     ListarTarefas(servico.ObterTodas());
 }
-
-static bool TemTarefas(ServicoDeTarefas servico) => servico.ObterTodas().Count > 0;
 
 static void EditarTarefa(ServicoDeTarefas servico)
 {
@@ -265,6 +274,11 @@ static void RemoverTodasConcluidas(ServicoDeTarefas servico)
     if (!TemTarefas(servico))
     {
         Saida.Aviso("Nenhuma tarefa cadastrada.");
+        return;
+    }
+    if (!TemTarefaConcluida(servico))
+    {
+        Saida.Aviso("Nehnhuma tarefa concluida para remover");
         return;
     }
     if (!Entrada.LerConfirmacao("Tem certeza que deseja remover? (S/N): "))
