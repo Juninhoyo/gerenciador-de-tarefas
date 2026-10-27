@@ -1,4 +1,5 @@
 ﻿using GerenciadorDeTarefas.Models;
+using GerenciadorDeTarefas.Models.Enums;
 using GerenciadorDeTarefas.Services;
 using GerenciadorDeTarefas.Utils;
 
@@ -11,6 +12,8 @@ public class Menu
         var tarefas = servico.ObterTodas();
         int concluidas = tarefas.Count(t => t.Status == Tarefa.StatusTarefa.Concluida);
         int pendentes = tarefas.Count(t => t.Status == Tarefa.StatusTarefa.Pendente);
+        int concluidas = tarefas.Count(t => t.Status == StatusTarefa.Concluida);
+        int pendentes = tarefas.Count(t => t.Status == StatusTarefa.Pendente);
         
         Console.WriteLine("-----------------------------");
         Console.WriteLine("Gerenciador de tarefas");
@@ -29,14 +32,14 @@ public class Menu
     static bool TemTarefas(ServicoDeTarefas servico) => servico.ObterTodas().Count > 0;
 
     static bool TemTarefaConcluida(ServicoDeTarefas servico) =>
-        servico.ObterTodas().Any(t => t.Status == Tarefa.StatusTarefa.Concluida);
+        servico.ObterTodas().Any(t => t.Status == StatusTarefa.Concluida);
 
     static void ListarTarefas(IReadOnlyList<Tarefa> tarefas)
     {
         for (int i = 0; i < tarefas.Count; i++)
         {
             var t = tarefas[i];
-            var status = t.Status == Tarefa.StatusTarefa.Concluida ? "Concluída" : "Pendente";
+            var status = t.Status == StatusTarefa.Concluida ? "Concluída" : "Pendente";
             var inicio = t.DataInicio.ToString("dd/MM/yyyy HH:mm");
             var conclusao = t.DataConclusao?.ToString("dd/MM/yyyy HH:mm") ?? "-";
             
@@ -56,7 +59,7 @@ public class Menu
         var adicionar = servico.Adicionar(Entrada.LerTexto("Digite o nome da tarefa: "));
         if (adicionar.IsSuccess)
         {
-            Saida.Sucesso("Tarefa adicionada com sucesso");
+            Saida.Sucesso("Tarefa adicionada com sucesso.");
         }
         else
         {
@@ -83,7 +86,7 @@ public class Menu
         var remover = servico.Remover(numeroRemover);
         if (remover.IsSuccess)
         {
-            Saida.Sucesso("Tarefa removida com sucesso");
+            Saida.Sucesso("Tarefa removida com sucesso.");
         }
         else
         {

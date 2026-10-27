@@ -1,4 +1,5 @@
 ﻿using GerenciadorDeTarefas.Common;
+using GerenciadorDeTarefas.Models.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -11,14 +12,7 @@ public class Tarefa
     public StatusTarefa Status { get; private set; }
     public DateTime DataInicio { get; private set; }
     public DateTime? DataConclusao { get; private set; }
-
     
-    public enum StatusTarefa
-    {
-        Pendente,
-        Concluida
-    }
-
     [JsonConstructor]
     public Tarefa(string titulo, StatusTarefa status, DateTime dataInicio, DateTime? dataConclusao)
     {

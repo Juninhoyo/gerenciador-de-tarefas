@@ -1,5 +1,6 @@
 ﻿using GerenciadorDeTarefas.Common;
 using GerenciadorDeTarefas.Models;
+using GerenciadorDeTarefas.Models.Enums;
 using GerenciadorDeTarefas.Utils;
 
 namespace GerenciadorDeTarefas.Services;
@@ -69,7 +70,7 @@ public sealed class ServicoDeTarefas
             return validacao;
         }
         var tarefa = _tarefas[numero - 1];
-        if (tarefa.Status != Tarefa.StatusTarefa.Concluida)
+        if (tarefa.Status != StatusTarefa.Concluida)
         {
             return TarefaErrors.TarefaNaoConcluida;
         }
@@ -96,7 +97,7 @@ public sealed class ServicoDeTarefas
         {
             return TarefaErrors.ListaVazia;
         }
-        int removidas = _tarefas.RemoveAll(t => t.Status == Tarefa.StatusTarefa.Concluida);
+        int removidas = _tarefas.RemoveAll(t => t.Status == StatusTarefa.Concluida);
         if (removidas == 0)
         {
             return TarefaErrors.NenhumaConcluida;
