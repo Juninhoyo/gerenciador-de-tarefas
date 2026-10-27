@@ -10,8 +10,6 @@ public class Menu
     public static void ExibirMenu(ServicoDeTarefas servico)
     {
         var tarefas = servico.ObterTodas();
-        int concluidas = tarefas.Count(t => t.Status == Tarefa.StatusTarefa.Concluida);
-        int pendentes = tarefas.Count(t => t.Status == Tarefa.StatusTarefa.Pendente);
         int concluidas = tarefas.Count(t => t.Status == StatusTarefa.Concluida);
         int pendentes = tarefas.Count(t => t.Status == StatusTarefa.Pendente);
         
@@ -25,6 +23,7 @@ public class Menu
         Console.WriteLine("5 - Editar tarefa");
         Console.WriteLine("6 - Listar todas as tarefas");
         Console.WriteLine("7 - Remover tarefas concluídas");
+        Console.WriteLine("8 - Ordenar Lista");
         Console.WriteLine("0 - Sair do programa");
         Console.WriteLine("------------------------------");
     }
@@ -211,5 +210,42 @@ public class Menu
         {
             Saida.Erro(remover.Error.Description);
         }
+    }
+
+    public static void OrdenarTarefas(ServicoDeTarefas servico)
+    {
+        Console.WriteLine("Ordernar Tarefas");
+        if (!TemTarefas(servico))
+        {
+            Saida.Aviso("Nenhuma tarefa cadastrada.");
+            return;
+        }
+        Console.WriteLine("1 - Status");
+        Console.WriteLine("2 - Data de início");
+        Console.WriteLine("3 - Título");
+        string opcaoCriterio = Entrada.LerTexto("Ordernar por: ");
+        CriterioOrdenacao criterio;
+        switch (opcaoCriterio)
+        {
+            case "1": criterio = CriterioOrdenacao.Status; break;
+            case "2": criterio = CriterioOrdenacao.DataInicio; break;
+            case "3": criterio = CriterioOrdenacao.Titulo; break;
+            default: Saida.Erro("Opção inválida,"); return;
+        }
+        
+        Console.WriteLine("1 - Cresencente");
+        Console.WriteLine("2 - Decresencente");
+        string opcaoDirecao = Entrada.LerTexto("Direção: ");
+        DirecaoOrdenacao direcao;
+        switch (opcaoDirecao)
+        {
+            case "1": direcao = DirecaoOrdenacao.Crescente; break;
+            case "2": direcao = DirecaoOrdenacao.Decrescente; break;
+            default: Saida.Erro("Opção inválida,"); return;
+        }
+        
+        servico.Ordenar(criterio, direcao);
+        Saida.Sucesso("Tarefas ordenadas com sucesso.");
+        ListarTarefas(servico.ObterTodas());
     }
 }

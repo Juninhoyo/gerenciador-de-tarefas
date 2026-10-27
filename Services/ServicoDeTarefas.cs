@@ -8,7 +8,7 @@ namespace GerenciadorDeTarefas.Services;
 public sealed class ServicoDeTarefas
 {
     private readonly SalvarArquivoTarefa _repositorio;
-    private readonly List<Tarefa> _tarefas;
+    private List<Tarefa> _tarefas;
 
     public ServicoDeTarefas(SalvarArquivoTarefa repositorio)
     {
@@ -104,5 +104,25 @@ public sealed class ServicoDeTarefas
         }
         _repositorio.SalvarArquivo(_tarefas);
         return removidas;
+    }
+
+    public void Ordenar(CriterioOrdenacao criterio, DirecaoOrdenacao direcao)
+    {
+        Comparison<Tarefa> comparacao = criterio switch
+        {
+            CriterioOrdenacao.Status => (a, b) => a.Status.CompareTo(b.Status),
+            CriterioOrdenacao.DataInicio => (a, b) => a.DataInicio.CompareTo(b.DataInicio),
+            CriterioOrdenacao.Titulo => (a, b) => string.Compare(a.Titulo, b.Titulo, StringComparison.OrdinalIgnoreCase),
+            _ => throw new ArgumentException(nameof(criterio))
+        };
+        if (direcao == DirecaoOrdenacao.Decrescente)
+        {
+            _tarefas.Sort((a, b) => comparacao(b, a));
+        }
+        else
+        {
+            _tarefas.Sort(comparacao);
+        }
+        _repositorio.SalvarArquivo(_tarefas);
     }
 }

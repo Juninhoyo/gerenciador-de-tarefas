@@ -70,6 +70,12 @@ do
                 Menu.RemoverTodasConcluidas(servico);
                 Menu.Pausar();
                 break;
+            
+            case "8":
+                Console.Clear();
+                Menu.OrdenarTarefas(servico);
+                Menu.Pausar();
+                    break;
 
             case "0":
                 Console.WriteLine("Saindo do programa.");
